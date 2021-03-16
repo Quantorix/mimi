@@ -43,7 +43,6 @@ class App extends React.Component {
     }
 
     render() {
-        console.log(this.state)
         return (
             <div className="container">
                 {
@@ -56,13 +55,27 @@ class App extends React.Component {
 
                                 >
                                     <div id={item.id} className="node" style={{top:item.x, left: item.y}}>
-                                        <div className="handle"/>
+                                        <div className="handle"
+                                             onMouseDown={(e) => this.handleMouseDownOnHandle(e)}
+                                        />
                                     </div>
                                 </Draggable>
                             </>
                         )
                     })
                 }
+                <svg className='drawing_container'>
+                    <PathLine
+                        points={[{x: this.state.start.x, y: this.state.start.y}, {
+                            x: this.state.end.x,
+                            y: this.state.end.y
+                        }]}
+                        stroke="red"
+                        strokeWidth="3"
+                        fill="none"
+                        r={10}
+                    />
+                </svg>
             </div>
         )
     }
@@ -70,7 +83,6 @@ class App extends React.Component {
     handleNodeDrag(e, data) {
     }
     handleNodeDragStop(e, data){
-        console.log(e)
         this.updateNode(data.node.id, {x: e.target.offsetTop, y: e.target.offsetLeft});
     }
     updateNode(id, itemAttributes) {
@@ -87,9 +99,16 @@ class App extends React.Component {
                 ]
             });
         }
-        console.log(this.state)
     }
-
+    handleMouseDownOnHandle(e){
+        e.stopPropagation()
+        let rect = e.target.getBoundingClientRect()
+        this.setState({
+            isConnecting: true,
+            start: {x: rect.left + 10, y: rect.top + 10},
+            end: {x: rect.left + 10, y: rect.top + 10}
+        })
+    }
 }
 
 export default App;
