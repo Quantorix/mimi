@@ -6,12 +6,13 @@ import {Resizable, ResizableBox} from 'react-resizable';
 import 'react-resizable/css/styles.css'
 
 class App extends React.Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
-            f1: {x: 0, y: 0},
-            f2: {x: 0, y: 0},
-            disabled: false,
+            nodes:[
+                { id:'n1', 'name': 'some name', x: 0, y: 0, drag_disabled: false },
+                { id:'n2', 'name': 'some name', x: 100, y: 200, drag_disabled: false },
+            ],
             isConnecting: false,
             start: {
                 x: 0,
@@ -42,67 +43,53 @@ class App extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         return (
             <div className="container">
-                <Draggable bounds="parent" disabled={this.state.disabled}
-                           onDrag={(e, data) => {
-                               console.log(e)
-                               let rect = e.target.lastChild.getBoundingClientRect()
-                               this.setState((prevState, props) => ({
-                                   f1: {x: data.x, y: data.y},
-                                   start: {x: rect.left + 10, y: rect.top + 10}
-                               }))
-                           }}
-                >
-                    <div id="f1">
-                        x: {this.state.f1.x}, y: {this.state.f1.y}
-                        <br/>
-                        start_x: {this.state.start.x}, start_y: {this.state.start.y},
-                        <div className="handle"
-                             onMouseDown={(e) => {
-                                 e.stopPropagation()
-                                 let rect = e.target.getBoundingClientRect()
-                                 this.setState({
-                                     disabled: true,
-                                     isConnecting: true,
-                                     start: {x: rect.left + 10, y: rect.top + 10},
-                                     end: {x: rect.left, y: rect.top}
-                                 })
-                             }}
-                        />
-                    </div>
-                </Draggable>
-                <Draggable disabled={this.state.disabled}>
-                    <ResizableBox className="box" width={200} height={120} draggableOpts={{grid: [25, 25]}}
-                                  onResize={(e, {element, size}) => {
-                                      e.stopPropagation()
-                                      console.log('resize')
-                                      this.setState({disabled: true})
-                                  }}
-                                  onResizeStart={(e) => {
-                                      e.stopPropagation()
-                                      console.log('resize start')
-                                      this.setState({disabled: true})
-                                  }}
-                    >
-                        <span className="text">Resizable rectangle with a locked aspect ratio.</span>
-                    </ResizableBox>
-                </Draggable>
-                <svg className='drawing_container'>
-                    <PathLine
-                        points={[{x: this.state.start.x, y: this.state.start.y}, {
-                            x: this.state.end.x,
-                            y: this.state.end.y
-                        }]}
-                        stroke="red"
-                        strokeWidth="3"
-                        fill="none"
-                        r={10}
-                    />
-                </svg>
+                {
+                    this.state.nodes.map((item, index)=>{
+                        return (
+                            <>
+                                <Draggable bounds="parent"
+                                           onDrag={(e, data) => this.handleNodeDrag(e, data)}
+                                           onStop={(e, data) => this.handleNodeDragStop(e, data)}
+
+                                >
+                                    <div id={item.id} className="node" style={{top:item.x, left: item.y}}>
+                                        <div className="handle"/>
+                                    </div>
+                                </Draggable>
+                            </>
+                        )
+                    })
+                }
             </div>
         )
     }
+
+    handleNodeDrag(e, data) {
+    }
+    handleNodeDragStop(e, data){
+        console.log(e)
+        this.updateNode(data.node.id, {x: e.target.offsetTop, y: e.target.offsetLeft});
+    }
+    updateNode(id, itemAttributes) {
+        var index = this.state.nodes.findIndex(x=> x.id === id);
+        if (index === -1){
+            // handle error
+        }
+        else {
+            this.setState({
+                nodes: [
+                    ...this.state.nodes.slice(0, index),
+                    Object.assign({}, this.state.nodes[index], itemAttributes),
+                    ...this.state.nodes.slice(index + 1)
+                ]
+            });
+        }
+        console.log(this.state)
+    }
+
 }
 
 export default App;
