@@ -45,6 +45,18 @@ class App extends React.Component {
     render() {
         return (
             <div className="container">
+                <svg className='drawing_container'>
+                    <PathLine
+                        points={[{x: this.state.start.x, y: this.state.start.y}, {
+                            x: this.state.end.x,
+                            y: this.state.end.y
+                        }]}
+                        stroke="green"
+                        strokeWidth="3"
+                        fill="none"
+                        r={10}
+                    />
+                </svg>
                 {
                     this.state.nodes.map((item, index)=>{
                         return (
@@ -64,18 +76,6 @@ class App extends React.Component {
                         )
                     })
                 }
-                <svg className='drawing_container'>
-                    <PathLine
-                        points={[{x: this.state.start.x, y: this.state.start.y}, {
-                            x: this.state.end.x,
-                            y: this.state.end.y
-                        }]}
-                        stroke="red"
-                        strokeWidth="3"
-                        fill="none"
-                        r={10}
-                    />
-                </svg>
             </div>
         )
     }
