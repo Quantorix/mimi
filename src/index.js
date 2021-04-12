@@ -3,12 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import DrawFlow from "./DrawFlow";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <DrawFlow />
-  </React.StrictMode>,
+    <App />,
   document.getElementById('root')
 );
 

@@ -1,5 +1,6 @@
 import React from "react";
 import Drawflow from 'drawflow'
+import toolbox from "./Components/Shared/toolbox";
 import  'drawflow/dist/drawflow.min.css'
 import './App.css'
 class DrawFlow extends React.Component{
@@ -25,6 +26,7 @@ class DrawFlow extends React.Component{
     render() {
         return(
             <>
+                <toolbox></toolbox>
                 <div ref={this.drawflow} className='drawflow-container'></div>
             </>
         )

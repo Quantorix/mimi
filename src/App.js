@@ -1,114 +1,19 @@
 import React from 'react'
 import './App.css'
-import Draggable from 'react-draggable';
-import {PathLine} from 'react-svg-pathline'
-import {Resizable, ResizableBox} from 'react-resizable';
-import 'react-resizable/css/styles.css'
-
-class App extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            nodes:[
-                { id:'n1', 'name': 'some name', x: 0, y: 0, drag_disabled: false },
-                { id:'n2', 'name': 'some name', x: 100, y: 200, drag_disabled: false },
-            ],
-            isConnecting: false,
-            start: {
-                x: 0,
-                y: 0
-            },
-            end: {
-                x: 0,
-                y: 0
-            }
-        }
+import Toolbox from "./Components/Shared/toolbox";
+import {Button} from "@material-ui/core";
+const App = (props)=>{
+    const [state, setState] = React.useState({
+        is_drawer_open: false
+    })
+    const toggleDrawer = () => {
+        setState({ ...state, is_drawer_open: !state.is_drawer_open });
     }
-
-    componentDidMount() {
-        document.addEventListener("mouseup", (e) => {
-            this.setState({disabled: false, isConnecting: false})
-        }, false);
-        document.addEventListener("mousemove", (e) => {
-            if (this.state.isConnecting) {
-                this.setState({end: {x: e.clientX, y: e.clientY}})
-            }
-        }, false);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener("mouseup", (e) => {
-            this.setState({disabled: false, isConnecting: false})
-        }, false);
-    }
-
-    render() {
-        return (
-            <div className="container">
-                <svg className='drawing_container'>
-                    <PathLine
-                        points={[{x: this.state.start.x, y: this.state.start.y}, {
-                            x: this.state.end.x,
-                            y: this.state.end.y
-                        }]}
-                        stroke="green"
-                        strokeWidth="3"
-                        fill="none"
-                        r={10}
-                    />
-                </svg>
-                {
-                    this.state.nodes.map((item, index)=>{
-                        return (
-                            <>
-                                <Draggable bounds="parent"
-                                           onDrag={(e, data) => this.handleNodeDrag(e, data)}
-                                           onStop={(e, data) => this.handleNodeDragStop(e, data)}
-
-                                >
-                                    <div id={item.id} className="node" style={{top:item.x, left: item.y}}>
-                                        <div className="handle"
-                                             onMouseDown={(e) => this.handleMouseDownOnHandle(e)}
-                                        />
-                                    </div>
-                                </Draggable>
-                            </>
-                        )
-                    })
-                }
-            </div>
-        )
-    }
-
-    handleNodeDrag(e, data) {
-    }
-    handleNodeDragStop(e, data){
-        this.updateNode(data.node.id, {x: e.target.offsetTop, y: e.target.offsetLeft});
-    }
-    updateNode(id, itemAttributes) {
-        var index = this.state.nodes.findIndex(x=> x.id === id);
-        if (index === -1){
-            // handle error
-        }
-        else {
-            this.setState({
-                nodes: [
-                    ...this.state.nodes.slice(0, index),
-                    Object.assign({}, this.state.nodes[index], itemAttributes),
-                    ...this.state.nodes.slice(index + 1)
-                ]
-            });
-        }
-    }
-    handleMouseDownOnHandle(e){
-        e.stopPropagation()
-        let rect = e.target.getBoundingClientRect()
-        this.setState({
-            isConnecting: true,
-            start: {x: rect.left + 10, y: rect.top + 10},
-            end: {x: rect.left + 10, y: rect.top + 10}
-        })
-    }
+    return (
+        <React.Fragment>
+            <Button onClick={toggleDrawer}>Open</Button>
+            <Toolbox open={state.is_drawer_open} onClose={toggleDrawer} />
+        </React.Fragment>
+    )
 }
-
-export default App;
+export default App
