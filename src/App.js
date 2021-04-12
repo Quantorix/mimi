@@ -1,7 +1,16 @@
 import React from 'react'
 import './App.css'
-import Toolbox from "./Components/Shared/toolbox";
-import {Button} from "@material-ui/core";
+import Toolbox from "./Components/Shared/toolbox"
+import {IconButton} from "@material-ui/core"
+import MenuIcon from '@material-ui/icons/Menu'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faDatabase } from "@fortawesome/free-solid-svg-icons";
+library.add(
+    faUser,
+    faDatabase
+);
+
 const App = (props)=>{
     const [state, setState] = React.useState({
         is_drawer_open: false
@@ -11,7 +20,9 @@ const App = (props)=>{
     }
     return (
         <React.Fragment>
-            <Button onClick={toggleDrawer}>Open</Button>
+            <IconButton aria-label="delete" onClick={toggleDrawer}>
+                <MenuIcon />
+            </IconButton>
             <Toolbox open={state.is_drawer_open} onClose={toggleDrawer} />
         </React.Fragment>
     )
